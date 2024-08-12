@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'receipt_screen.dart'; // Adjust the path based on your project structure
+
 
 class BusTicketScreen extends StatefulWidget {
   final String startingStop;
@@ -20,10 +22,21 @@ class _BusTicketScreenState extends State<BusTicketScreen> {
   String? selectedStop;
   String? selectedCard;
 
-  // Fare data
-  final Map<String, Map<String, double>> fares = {
-    // Fare data remains the same
-  };
+  // Fare data after the first 4 kilometers
+  final List<Map<String, double>> fareSteps = [
+    {'regular': 17.2, 'discounted': 13.7},
+    {'regular': 19.5, 'discounted': 15.4},
+    {'regular': 21.5, 'discounted': 17.2},
+    {'regular': 23.75, 'discounted': 19.0},
+    {'regular': 24.0, 'discounted': 20.8},
+    {'regular': 28.25, 'discounted': 22.6},
+    {'regular': 30.5, 'discounted': 24.4},
+    {'regular': 32.5, 'discounted': 26.0},
+    {'regular': 34.75, 'discounted': 27.8},
+    {'regular': 34.0, 'discounted': 28.8},
+    {'regular': 39.25, 'discounted': 31.4},
+    {'regular': 41.5, 'discounted': 33.2},
+  ];
 
   double regularFare = 0.0;
   double discountedFare = 0.0;
@@ -109,7 +122,57 @@ class _BusTicketScreenState extends State<BusTicketScreen> {
   }
 
   void _calculateFare() {
-    // Fare calculation logic remains the same
+    // Extract KM number from the selected starting and destination stops
+    String? startKm = selectedStop?.split('KM ').last;
+    String? destinationKm = selectedCard?.split('KM ').last;
+
+    if (startKm != null && destinationKm != null) {
+      int startKmNumber = int.parse(startKm);
+      int destinationKmNumber = int.parse(destinationKm);
+      int distance = destinationKmNumber - startKmNumber;
+
+      if (distance > 0) {
+        if (distance <= 4) {
+          // First 4 kilometers
+          setState(() {
+            regularFare = 15.0;
+            discountedFare = 12.0;
+          });
+        } else if (distance - 4 <= fareSteps.length) {
+          // Beyond 4 kilometers, use the fareSteps list
+          int fareIndex = distance - 5; // Because the first 4 kms are fixed
+
+          setState(() {
+            regularFare = fareSteps[fareIndex]['regular']!;
+            discountedFare = fareSteps[fareIndex]['discounted']!;
+          });
+        } else {
+          setState(() {
+            regularFare = 0.0;
+            discountedFare = 0.0;
+          });
+        }
+      } else {
+        setState(() {
+          regularFare = 0.0;
+          discountedFare = 0.0;
+        });
+      }
+    }
+  }
+
+  void _showReceipt(bool isDiscounted) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ReceiptScreen(
+          startingStop: selectedStop!,
+          destinationStop: selectedCard!,
+          fare: isDiscounted ? discountedFare : regularFare,
+          isDiscounted: isDiscounted,
+        ),
+      ),
+    );
   }
 
   @override
@@ -220,18 +283,22 @@ class _BusTicketScreenState extends State<BusTicketScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  onPressed: () {
-                    // Add logic for discounted ticket
-                  },
+                  onPressed: selectedCard != null
+                      ? () {
+                    _showReceipt(true); // Discounted fare
+                  }
+                      : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,
                   ),
                   child: Text('DISCOUNTED\n₱${discountedFare.toStringAsFixed(2)}'),
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    // Add logic for regular ticket
-                  },
+                  onPressed: selectedCard != null
+                      ? () {
+                    _showReceipt(false); // Regular fare
+                  }
+                      : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,
                   ),
