@@ -1,4 +1,5 @@
 # Bus Ticketing System
+# 8/12/2024 1:12 PM Instead of going to select_stop_screen.dart when clicking Bus Ticket it would now directly go to bus_ticket_screen reducing redunduncy
 # 8/12/2024the reverse order starting from Ampayon Rotunda in the select_stop_screen.dart is not working properly but is working otherwise in the bus_ticket_screen
 Unfinished flutter project
 
