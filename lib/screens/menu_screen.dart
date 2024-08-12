@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'headcount_screen.dart';  // Import the new HeadcountScreen
-import 'select_stop_screen.dart';  // Adjust the path if the file is in a different directory
+import 'headcount_screen.dart';  // Import the HeadcountScreen
+import 'bus_ticket_screen.dart'; // Import the BusTicketScreen
 
 class MenuScreen extends StatelessWidget {
   const MenuScreen({Key? key}) : super(key: key);
@@ -20,7 +20,11 @@ class MenuScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const SelectStopScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const BusTicketScreen(
+                      startingStop: 'BANCASI-DUMALAGAN KM 0', // Default starting stop
+                    ),
+                  ),
                 );
               },
               style: ElevatedButton.styleFrom(

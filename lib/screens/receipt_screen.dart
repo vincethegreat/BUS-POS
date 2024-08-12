@@ -46,18 +46,56 @@ class ReceiptScreen extends StatelessWidget {
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const Spacer(),
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context); // Close the receipt screen
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Close the receipt screen
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  ),
+                  child: const Text('Close'),
                 ),
-                child: const Text('Close'),
-              ),
+                const SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    // Simulate a print action by briefly navigating to a blank screen
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) => _PrintScreen()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  ),
+                  child: const Text('Print'),
+                ),
+              ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PrintScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Simulate the black screen effect
+    Future.delayed(const Duration(seconds: 1), () {
+      Navigator.pop(context); // Return to previous screen after delay
+    });
+
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Center(
+        child: CircularProgressIndicator(
+          color: Colors.white,
         ),
       ),
     );

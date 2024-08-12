@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'receipt_screen.dart'; // Adjust the path based on your project structure
 
-
 class BusTicketScreen extends StatefulWidget {
   final String startingStop;
-  final bool reverseOrder; // Add the reverseOrder parameter
+  final bool reverseOrder;
 
   const BusTicketScreen({
     Key? key,
@@ -22,7 +21,6 @@ class _BusTicketScreenState extends State<BusTicketScreen> {
   String? selectedStop;
   String? selectedCard;
 
-  // Fare data after the first 4 kilometers
   final List<Map<String, double>> fareSteps = [
     {'regular': 17.2, 'discounted': 13.7},
     {'regular': 19.5, 'discounted': 15.4},
@@ -84,11 +82,9 @@ class _BusTicketScreenState extends State<BusTicketScreen> {
   void _reverseStopsOrder() {
     setState(() {
       allStops = allStops.reversed.toList();
-      // Adjust the KM numbers accordingly
       for (int i = 0; i < allStops.length; i++) {
         allStops[i] = allStops[i].replaceAll(RegExp(r'KM \d+'), 'KM $i');
       }
-      // Reset the selected stop to the first stop in the new order
       selectedStop = allStops.first;
       _updateAvailableStops();
     });
@@ -117,12 +113,11 @@ class _BusTicketScreenState extends State<BusTicketScreen> {
   void _onCardTapped(String stop) {
     setState(() {
       selectedCard = stop;
-      _calculateFare(); // Recalculate fare when a card is selected
+      _calculateFare();
     });
   }
 
   void _calculateFare() {
-    // Extract KM number from the selected starting and destination stops
     String? startKm = selectedStop?.split('KM ').last;
     String? destinationKm = selectedCard?.split('KM ').last;
 
@@ -133,15 +128,12 @@ class _BusTicketScreenState extends State<BusTicketScreen> {
 
       if (distance > 0) {
         if (distance <= 4) {
-          // First 4 kilometers
           setState(() {
             regularFare = 15.0;
             discountedFare = 12.0;
           });
         } else if (distance - 4 <= fareSteps.length) {
-          // Beyond 4 kilometers, use the fareSteps list
-          int fareIndex = distance - 5; // Because the first 4 kms are fixed
-
+          int fareIndex = distance - 5;
           setState(() {
             regularFare = fareSteps[fareIndex]['regular']!;
             discountedFare = fareSteps[fareIndex]['discounted']!;
@@ -186,9 +178,9 @@ class _BusTicketScreenState extends State<BusTicketScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               children: const [
-                Text("21:49"), // Mock time, adjust as needed
+                Text("21:49"),
                 SizedBox(width: 8),
-                Icon(Icons.battery_std), // Mock battery icon, adjust as needed
+                Icon(Icons.battery_std),
               ],
             ),
           ),
@@ -224,9 +216,12 @@ class _BusTicketScreenState extends State<BusTicketScreen> {
                         setState(() {
                           selectedStop = newValue;
                           _updateAvailableStops();
-                          // Check if last stop is selected
                           if (newValue == 'Ampayon Rotunda KM 16') {
                             _reverseStopsOrder();
+                          } else if (newValue == 'BANCASI-DUMALAGAN KM 0') {
+                            if (allStops.first != 'BANCASI-DUMALAGAN KM 0') {
+                              _reverseStopsOrder();
+                            }
                           }
                         });
                       }
@@ -285,7 +280,7 @@ class _BusTicketScreenState extends State<BusTicketScreen> {
                 ElevatedButton(
                   onPressed: selectedCard != null
                       ? () {
-                    _showReceipt(true); // Discounted fare
+                    _showReceipt(true);
                   }
                       : null,
                   style: ElevatedButton.styleFrom(
@@ -296,7 +291,7 @@ class _BusTicketScreenState extends State<BusTicketScreen> {
                 ElevatedButton(
                   onPressed: selectedCard != null
                       ? () {
-                    _showReceipt(false); // Regular fare
+                    _showReceipt(false);
                   }
                       : null,
                   style: ElevatedButton.styleFrom(

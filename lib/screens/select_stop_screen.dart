@@ -30,7 +30,7 @@ class _SelectStopScreenState extends State<SelectStopScreen> {
   ];
 
   String? selectedStop;
-  bool reverseOrder = false;
+  bool reverseOrder = true;
 
   @override
   Widget build(BuildContext context) {
