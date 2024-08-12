@@ -1,6 +1,6 @@
-# untitled
+# Bus Ticketing System
 
-A new Flutter project.
+Unfinished flutter project
 
 ## Getting Started
 
